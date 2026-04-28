@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Score SER+</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0f0f12;
+      --surface: #16161c;
+      --surface2: #1e1e28;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text: #e8e6f0;
+      --text-muted: #7a7890;
+      --text-dim: #4a4860;
+      --accent: #7c6af7;
+      --accent-soft: rgba(124, 106, 247, 0.12);
+      --accent-glow: rgba(124, 106, 247, 0.3);
+      --green: #4fd6a0;
+      --green-soft: rgba(79, 214, 160, 0.1);
+      --amber: #f0a742;
+      --amber-soft: rgba(240, 167, 66, 0.1);
+      --red: #f06060;
+      --red-soft: rgba(240, 96, 96, 0.1);
+      --par: #7c6af7;
+      --par-soft: rgba(124, 106, 247, 0.12);
+      --vol: #4fd6a0;
+      --vol-soft: rgba(79, 214, 160, 0.1);
+      --din: #f0a742;
+      --din-soft: rgba(240, 167, 66, 0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --mono: 'DM Mono', monospace;
+      --sans: 'Sora', sans-serif;
+      --transition: 0.15s ease;
+    }
+
+    html {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .logo-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-top: 2px;
+    }
+
+    .version-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid rgba(124, 106, 247, 0.2);
+      border-radius: 99px;
+      padding: 3px 10px;
+      align-self: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Section ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color var(--transition);
+    }
+
+    .section:hover {
+      border-color: var(--border-hover);
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--text-dim);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Q1 Select ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .field-label span {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-right: 4px;
+    }
+
+    select {
+      appearance: none;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 13px;
+      padding: 10px 36px 10px 12px;
+      width: 100%;
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%237a7890' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    select option {
+      background: #1e1e28;
+    }
+
+    /* ── Likert ── */
+    .likert-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .likert-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .likert-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .likert-btns button {
+      flex: 1;
+      padding: 10px 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .likert-btns button:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .likert-btns button.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.25rem 0;
+    }
+
+    /* ── Calc rows ── */
+    .calc-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .calc-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .calc-row:last-child {
+      border-bottom: none;
+    }
+
+    .calc-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .calc-formula {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    .calc-val {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* ── Profile result cards ── */
+    .profile-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .profile-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+      opacity: 0.8;
+    }
+
+    .profile-card.par::before {
+      background: var(--par);
+    }
+
+    .profile-card.vol::before {
+      background: var(--vol);
+    }
+
+    .profile-card.din::before {
+      background: var(--din);
+    }
+
+    .profile-card:hover {
+      border-color: var(--border-hover);
+    }
+
+    .profile-tag {
+      font-size: 10px;
+      font-family: var(--mono);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      border-radius: 4px;
+      padding: 2px 7px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .par .profile-tag {
+      color: var(--par);
+      background: var(--par-soft);
+    }
+
+    .vol .profile-tag {
+      color: var(--vol);
+      background: var(--vol-soft);
+    }
+
+    .din .profile-tag {
+      color: var(--din);
+      background: var(--din-soft);
+    }
+
+    .metric {
+      margin-bottom: 10px;
+    }
+
+    .metric:last-child {
+      margin-bottom: 0;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-family: var(--mono);
+    }
+
+    .metric-value {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .metric-unit {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 3px;
+      font-weight: 300;
+    }
+
+    .par .metric-value {
+      color: var(--par);
+    }
+
+    .vol .metric-value {
+      color: var(--vol);
+    }
+
+    .din .metric-value {
+      color: var(--din);
+    }
+
+    .metric-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* ── Warning ── */
+    .warn-box {
+      background: var(--red-soft);
+      border: 1px solid rgba(240, 96, 96, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--red);
+      margin-top: 10px;
+      display: none;
+      font-family: var(--mono);
+    }
+
+    .warn-box.show {
+      display: block;
+    }
+
+    /* ── Cert section ── */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .cert-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+
+    .cert-label {
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 6px;
+    }
+
+    .cert-value {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .cert-pct {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 3rem;
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+
+      .profile-cards,
+      .cert-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .likert-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ENTRADAS -->
+  <div class="section">
+    <div class="section-label">Entradas — formulário do dinamizador</div>
+
+    <div class="field" style="margin-bottom: 1.25rem;">
+      <div class="field-label"><span>Q1</span> Duração da iniciativa</div>
+      <select id="q1" onchange="calc()">
+        <option value="0.5">Menos de 1 hora</option>
+        <option value="1.5">1 a 2 horas</option>
+        <option value="2.5">2 a 3 horas</option>
+        <option value="3.5" selected>3 a 4 horas</option>
+        <option value="4.5">4 a 5 horas</option>
+        <option value="5.5">5 a 6 horas</option>
+        <option value="6.5">6 a 7 horas</option>
+        <option value="7.5">7 a 8 horas</option>
+        <option value="8.5">8 a 9 horas</option>
+        <option value="9.5">9 a 10 horas</option>
+        <option value="15">10 a 20 horas</option>
+        <option value="25">20 a 30 horas</option>
+        <option value="35">30 a 40 horas</option>
+        <option value="45">40 a 50 horas</option>
+        <option value="55">50 a 60 horas</option>
+        <option value="65">60 a 70 horas</option>
+        <option value="75">70 a 80 horas</option>
+        <option value="85">80 a 90 horas</option>
+        <option value="95">90 a 100 horas</option>
+        <option value="105">Mais de 100 horas</option>
+      </select>
+    </div>
+
+    <div class="likert-grid">
+      <div class="likert-field">
+        <div class="field-label"><span>Q2</span> Preparação necessária</div>
+        <div class="likert-btns" id="q2-btns">
+          <button onclick="setLikert('q2',1)" class="active" title="Muito baixa">1</button>
+          <button onclick="setLikert('q2',2)" title="Média">2</button>
+          <button onclick="setLikert('q2',3)" title="Muito elevada">3</button>
+        </div>
+      </div>
+      <div class="likert-field">
+        <div class="field-label"><span>Q3</span> Complexidade das tarefas</div>
+        <div class="likert-btns" id="q3-btns">
+          <button onclick="setLikert('q3',1)" title="Muito baixa">1</button>
+          <button onclick="setLikert('q3',2)">2</button>
+          <button onclick="setLikert('q3',3)" class="active" title="Muito elevada">3</button>
+        </div>
+      </div>
+      <div class="likert-field">
+        <div class="field-label"><span>Q4</span> Responsabilidade e autonomia</div>
+        <div class="likert-btns" id="q4-btns">
+          <button onclick="setLikert('q4',1)" title="Muito baixa">1</button>
+          <button onclick="setLikert('q4',2)" class="active">2</button>
+          <button onclick="setLikert('q4',3)" title="Muito elevada">3</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CÁLCULO INTERMÉDIO -->
+  <div class="section">
+    <div class="section-label">Cálculo intermédio</div>
+    <div class="calc-rows">
+      <div class="calc-row">
+        <div>
+          <div class="calc-desc">Horas (ponto médio do intervalo Q1)</div>
+          <div class="calc-formula" id="f-horas">—</div>
+        </div>
+        <div class="calc-val" id="c-horas">—</div>
+      </div>
+      <div class="calc-row">
+        <div>
+          <div class="calc-desc">Estrelas base <span style="font-size:11px;color:var(--text-dim);">(1h = 50
+              estrelas)</span></div>
+          <div class="calc-formula" id="f-base">—</div>
+        </div>
+        <div class="calc-val" id="c-base">— ★</div>
+      </div>
+      <div class="calc-row">
+        <div>
+          <div class="calc-desc">Média Likert (Q2 + Q3 + Q4) / 3</div>
+          <div class="calc-formula" id="f-media">—</div>
+        </div>
+        <div class="calc-val" id="c-media">—</div>
+      </div>
+      <div class="calc-row">
+        <div>
+          <div class="calc-desc">Total estrelas participantes (antes do limite)</div>
+          <div class="calc-formula" id="f-raw">—</div>
+        </div>
+        <div class="calc-val" id="c-raw">— ★</div>
+      </div>
+      <div class="calc-row">
+        <div>
+          <div class="calc-desc">Mínimo de badges obrigatórios</div>
+          <div class="calc-formula" id="f-minb">—</div>
+        </div>
+        <div class="calc-val" id="c-minb">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADOS POR PERFIL -->
+  <div class="section">
+    <div class="section-label">Resultados por perfil</div>
+    <div class="warn-box" id="warn-limit">⚠ Limite de 5 000 estrelas atingido — um ou mais perfis foram truncados.</div>
+    <div class="profile-cards">
+
+      <div class="profile-card par">
+        <div class="profile-tag">Participantes</div>
+        <div class="metric">
+          <div class="metric-label">TOTAL_ESTRELAS</div>
+          <div class="metric-value"><span id="r-par-est">—</span><span class="metric-unit">★</span></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">MAX_BADGE_XP</div>
+          <div class="metric-value"><span id="r-par-badge">—</span><span class="metric-unit">XP</span></div>
+          <div class="metric-sub" id="r-par-badge-sub">—</div>
+        </div>
+      </div>
+
+      <div class="profile-card vol">
+        <div class="profile-tag">Voluntários</div>
+        <div class="metric">
+          <div class="metric-label">TOTAL_ESTRELAS</div>
+          <div class="metric-value"><span id="r-vol-est">—</span><span class="metric-unit">★</span></div>
+          <div class="metric-sub" id="r-vol-est-sub">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">MAX_BADGE_XP</div>
+          <div class="metric-value"><span id="r-vol-badge">—</span><span class="metric-unit">XP</span></div>
+          <div class="metric-sub" id="r-vol-badge-sub">—</div>
+        </div>
+      </div>
+
+      <div class="profile-card din">
+        <div class="profile-tag">Dinamizadores</div>
+        <div class="metric">
+          <div class="metric-label">TOTAL_ESTRELAS</div>
+          <div class="metric-value"><span id="r-din-est">—</span><span class="metric-unit">★</span></div>
+          <div class="metric-sub" id="r-din-est-sub">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">MAX_BADGE_XP</div>
+          <div class="metric-value"><span id="r-din-badge">—</span><span class="metric-unit">XP</span></div>
+          <div class="metric-sub" id="r-din-badge-sub">—</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CERTIFICADOS -->
+  <div class="section">
+    <div class="section-label">Certificados (MAX_CERT_XP por perfil)</div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="cert-label" style="color:var(--par)">Participantes</div>
+        <div class="cert-value" id="cert-par">—</div>
+        <div class="cert-pct" id="cert-par-pct">—</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-label" style="color:var(--vol)">Voluntários</div>
+        <div class="cert-value" id="cert-vol">—</div>
+        <div class="cert-pct" id="cert-vol-pct">—</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-label" style="color:var(--din)">Dinamizadores</div>
+        <div class="cert-value" id="cert-din">—</div>
+        <div class="cert-pct" id="cert-din-pct">—</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Score SER+ · Calculadora local
+  </footer>
+
+  <script>
+    const likert = { q2: 1, q3: 3, q4: 2 };
+
+    function setLikert(key, val) {
+      likert[key] = val;
+      document.getElementById(key + '-btns').querySelectorAll('button')
+        .forEach((b, i) => b.classList.toggle('active', i + 1 === val));
+      calc();
+    }
+
+    function minBadgesFor(h) {
+      if (h <= 2) return 1;
+      if (h <= 3) return 2;
+      if (h <= 4) return 3;
+      if (h <= 5) return 4;
+      if (h <= 6) return 5;
+      if (h <= 7) return 6;
+      if (h <= 8) return 7;
+      if (h <= 9) return 8;
+      if (h <= 10) return 9;
+      return 10;
+    }
+
+    function fmt(n) { return n.toLocaleString('pt-PT'); }
+    function fmtH(h) { return h % 1 === 0 ? h.toFixed(0) : h.toFixed(1); }
+
+    function set(id, val) { document.getElementById(id).textContent = val; }
+
+    function certPct(h) { return h <= 6 ? 1.0 : 0.5; }
+    function certLabel(h) { return h <= 6 ? '100% do TOTAL_ESTRELAS (≤ 6h)' : '50% do TOTAL_ESTRELAS (> 6h)'; }
+
+    function calc() {
+      const horas = parseFloat(document.getElementById('q1').value);
+      const q2 = likert.q2, q3 = likert.q3, q4 = likert.q4;
+
+      const base = horas * 50;
+      const media = (q2 + q3 + q4) / 3;
+      const rawPar = base * media;
+      const parRaw = Math.ceil(rawPar);
+      const LIMIT = 5000;
+
+      const parEst = Math.min(parRaw, LIMIT);
+      const volEst = Math.min(parEst + 100, LIMIT);
+      const dinEst = Math.min(parEst + 300, LIMIT);
+
+      const minB = minBadgesFor(horas);
+
+      const parBadge = Math.ceil(parEst / minB);
+      const volBadge = Math.ceil(volEst / minB);
+      const dinBadge = Math.ceil(dinEst / minB);
+
+      const pct = certPct(horas);
+      const cPar = Math.ceil(parEst * pct);
+      const cVol = Math.ceil(volEst * pct);
+      const cDin = Math.ceil(dinEst * pct);
+      const cLbl = certLabel(horas);
+
+      // intermediary
+      set('c-horas', fmtH(horas) + ' h');
+      set('f-horas', 'ponto médio do intervalo selecionado');
+      set('c-base', fmt(base) + ' ★');
+      set('f-base', `${fmtH(horas)} h × 50 = ${fmt(base)}`);
+      set('c-media', media.toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
+      set('f-media', `(${q2} + ${q3} + ${q4}) / 3 = ${(q2 + q3 + q4)} / 3`);
+      set('c-raw', fmt(parRaw) + ' ★' + (parRaw > LIMIT ? '  → truncado' : ''));
+      set('f-raw', `${fmt(base)} × ${media.toFixed(4).replace(/0+$/, '')} = ${rawPar.toFixed(2)} → ⌈${rawPar.toFixed(2)}⌉ = ${fmt(parRaw)}`);
+      set('c-minb', minB + ' badge' + (minB > 1 ? 's' : ''));
+      set('f-minb', duracaoLabel(horas));
+
+      // warn
+      const capped = parRaw > LIMIT || (parEst + 100) > LIMIT || (parEst + 300) > LIMIT;
+      document.getElementById('warn-limit').classList.toggle('show', capped);
+
+      // profile results
+      set('r-par-est', fmt(parEst));
+      set('r-par-badge', fmt(parBadge));
+      set('r-par-badge-sub', `${fmt(parEst)} ÷ ${minB} badges`);
+
+      set('r-vol-est', fmt(volEst));
+      set('r-vol-est-sub', `${fmt(parEst)} + 100`);
+      set('r-vol-badge', fmt(volBadge));
+      set('r-vol-badge-sub', `${fmt(volEst)} ÷ ${minB} badges`);
+
+      set('r-din-est', fmt(dinEst));
+      set('r-din-est-sub', `${fmt(parEst)} + 300`);
+      set('r-din-badge', fmt(dinBadge))
+      set('r-din-badge-sub', `${fmt(dinEst)} ÷ ${minB} badges`);
+
+
+      // certs
+      set('cert-par', fmt(cPar) + ' XP');
+      set('cert-par-pct', cLbl);
+      set('cert-vol', fmt(cVol) + ' XP');
+      set('cert-vol-pct', cLbl);
+      set('cert-din', fmt(cDin) + ' XP');
+      set('cert-din-pct', cLbl);
+    }
+
+    function duracaoLabel(h) {
+      if (h <= 2) return 'Até 2 horas → mín. 1 badge';
+      if (h <= 3) return '2 a 3 horas → mín. 2 badges';
+      if (h <= 4) return '3 a 4 horas → mín. 3 badges';
+      if (h <= 5) return '4 a 5 horas → mín. 4 badges';
+      if (h <= 6) return '5 a 6 horas → mín. 5 badges';
+      if (h <= 7) return '6 a 7 horas → mín. 6 badges';
+      if (h <= 8) return '7 a 8 horas → mín. 7 badges';
+      if (h <= 9) return '8 a 9 horas → mín. 8 badges';
+      if (h <= 10) return '9 a 10 horas → mín. 9 badges';
+      return 'Mais de 10 horas → mín. 10 badges';
+    }
+
+    calc();
+  </script>
+</body>
+
+</html>
