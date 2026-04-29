@@ -150,7 +150,7 @@
       background: var(--border);
     }
 
-    /* ── Q1 Select ── */
+    /* ── Q1 interval inputs ── */
     .field {
       display: flex;
       flex-direction: column;
@@ -173,6 +173,85 @@
       margin-right: 4px;
     }
 
+    .interval-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .interval-row .sep {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .num-input-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .num-input-wrap input[type="number"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 12px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      -moz-appearance: textfield;
+    }
+    .num-input-wrap input[type="number"]::-webkit-inner-spin-button,
+    .num-input-wrap input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .num-input-wrap input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .num-input-wrap input[type="number"].error {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(240,96,96,0.2);
+    }
+
+    .unit-toggle {
+      display: flex;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .unit-toggle button {
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .unit-toggle button.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .interval-info {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      min-height: 16px;
+      transition: color var(--transition);
+    }
+    .interval-info.warn { color: var(--red); }
+    .interval-info.ok   { color: var(--green); }
+
     select {
       appearance: none;
       background: var(--surface2);
@@ -189,16 +268,12 @@
       background-repeat: no-repeat;
       background-position: right 12px center;
     }
-
     select:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
-
-    select option {
-      background: #1e1e28;
-    }
+    select option { background: #1e1e28; }
 
     /* ── Likert ── */
     .likert-grid {
@@ -503,29 +578,25 @@
     <div class="section-label">Entradas — formulário do dinamizador</div>
 
     <div class="field" style="margin-bottom: 1.25rem;">
-      <div class="field-label"><span>Q1</span> Tempo que os participantes vão dedicar à iniciativa</div>
-      <select id="q1" onchange="calc()">
-        <option value="0.5">Menos de 1 hora</option>
-        <option value="1.5">1 a 2 horas</option>
-        <option value="2.5">2 a 3 horas</option>
-        <option value="3.5" selected>3 a 4 horas</option>
-        <option value="4.5">4 a 5 horas</option>
-        <option value="5.5">5 a 6 horas</option>
-        <option value="6.5">6 a 7 horas</option>
-        <option value="7.5">7 a 8 horas</option>
-        <option value="8.5">8 a 9 horas</option>
-        <option value="9.5">9 a 10 horas</option>
-        <option value="15">10 a 20 horas</option>
-        <option value="25">20 a 30 horas</option>
-        <option value="35">30 a 40 horas</option>
-        <option value="45">40 a 50 horas</option>
-        <option value="55">50 a 60 horas</option>
-        <option value="65">60 a 70 horas</option>
-        <option value="75">70 a 80 horas</option>
-        <option value="85">80 a 90 horas</option>
-        <option value="95">90 a 100 horas</option>
-        <option value="105">Mais de 100 horas</option>
-      </select>
+      <div class="field-label"><span>Q1</span> Duração da iniciativa</div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <div class="unit-toggle">
+          <button id="unit-min" onclick="setUnit('min')">min</button>
+          <button id="unit-h" onclick="setUnit('h')" class="active">h</button>
+        </div>
+        <span style="font-size:11px; color:var(--text-dim); font-family:var(--mono);">unidade do intervalo</span>
+      </div>
+      <div class="interval-row">
+        <div class="num-input-wrap">
+          <input type="number" id="q1-from" min="0" step="any" placeholder="de" oninput="calc()" value="3">
+        </div>
+        <span class="sep">→</span>
+        <div class="num-input-wrap">
+          <input type="number" id="q1-to" min="0" step="any" placeholder="até" oninput="calc()" value="4">
+        </div>
+        <span class="sep" id="unit-label">h</span>
+      </div>
+      <div class="interval-info" id="interval-info">—</div>
     </div>
 
     <div class="likert-grid">
@@ -602,7 +673,7 @@
   <!-- RESULTADOS POR PERFIL -->
   <div class="section">
     <div class="section-label">Resultados por perfil</div>
-    <div class="warn-box" id="warn-limit">Limite de 5 000 estrelas atingido.</div>
+    <div class="warn-box" id="warn-limit"> Limite de 5 000 estrelas atingido — um ou mais perfis foram truncados.</div>
     <div class="profile-cards">
 
       <div class="profile-card par">
@@ -677,6 +748,15 @@
 
   <script>
     const likert = { q2: 1, q3: 3, q4: 2 };
+    let unit = 'h'; // 'h' or 'min'
+
+    function setUnit(u) {
+      unit = u;
+      document.getElementById('unit-label').textContent = u;
+      document.getElementById('unit-min').classList.toggle('active', u === 'min');
+      document.getElementById('unit-h').classList.toggle('active', u === 'h');
+      calc();
+    }
 
     function setLikert(key, val) {
       likert[key] = val;
@@ -699,7 +779,16 @@
     }
 
     function fmt(n) { return n.toLocaleString('pt-PT'); }
-    function fmtH(h) { return h % 1 === 0 ? h.toFixed(0) : h.toFixed(1); }
+    function fmtH(h) {
+      if (h < 1) {
+        const mins = Math.round(h * 60);
+        return mins + ' min';
+      }
+      const whole = Math.floor(h);
+      const mins = Math.round((h - whole) * 60);
+      if (mins === 0) return whole + ' h';
+      return whole + ' h ' + mins + ' min';
+    }
 
     function set(id, val) { document.getElementById(id).textContent = val; }
 
@@ -707,42 +796,74 @@
     function certLabel(h) { return h <= 6 ? '100% do TOTAL_ESTRELAS (≤ 6h)' : '50% do TOTAL_ESTRELAS (> 6h)'; }
 
     function calc() {
-      const horas = parseFloat(document.getElementById('q1').value);
-      const q2 = likert.q2, q3 = likert.q3, q4 = likert.q4;
+      const fromRaw = parseFloat(document.getElementById('q1-from').value);
+      const toRaw   = parseFloat(document.getElementById('q1-to').value);
+      const infoEl  = document.getElementById('interval-info');
+      const fromEl  = document.getElementById('q1-from');
+      const toEl    = document.getElementById('q1-to');
 
-      const base = horas * 50;
-      const media = (q2 + q3 + q4) / 3;
+      // validation
+      if (isNaN(fromRaw) || isNaN(toRaw) || fromRaw < 0 || toRaw < 0) {
+        infoEl.textContent = 'Introduz valores válidos nos dois campos.';
+        infoEl.className = 'interval-info warn';
+        fromEl.classList.add('error');
+        toEl.classList.add('error');
+        return;
+      }
+
+      // convert to hours
+      const fromH = unit === 'min' ? fromRaw / 60 : fromRaw;
+      const toH   = unit === 'min' ? toRaw / 60   : toRaw;
+
+      if (fromH >= toH) {
+        infoEl.textContent = 'O valor "de" deve ser menor que o valor "até".';
+        infoEl.className = 'interval-info warn';
+        fromEl.classList.add('error');
+        toEl.classList.add('error');
+        return;
+      }
+
+      fromEl.classList.remove('error');
+      toEl.classList.remove('error');
+
+      const midH = (fromH + toH) / 2;
+      infoEl.textContent = `Ponto médio: ${fmtH(fromH)} → ${fmtH(toH)} = ${fmtH(midH)}`;
+      infoEl.className = 'interval-info ok';
+
+      const q2 = likert.q2, q3 = likert.q3, q4 = likert.q4;
+      const base   = midH * 50;
+      const media  = (q2 + q3 + q4) / 3;
       const rawPar = base * media;
       const parRaw = Math.ceil(rawPar);
-      const LIMIT = 5000;
+      const LIMIT  = 5000;
 
       const parEst = Math.min(parRaw, LIMIT);
       const volEst = Math.min(parEst + 100, LIMIT);
       const dinEst = Math.min(parEst + 300, LIMIT);
 
-      const minB = minBadgesFor(horas);
+      const minB = minBadgesFor(midH);
 
       const parBadge = Math.ceil(parEst / minB);
       const volBadge = Math.ceil(volEst / minB);
       const dinBadge = Math.ceil(dinEst / minB);
 
-      const pct = certPct(horas);
+      const pct  = certPct(midH);
       const cPar = Math.ceil(parEst * pct);
       const cVol = Math.ceil(volEst * pct);
       const cDin = Math.ceil(dinEst * pct);
-      const cLbl = certLabel(horas);
+      const cLbl = certLabel(midH);
 
       // intermediary
-      set('c-horas', fmtH(horas) + ' h');
-      set('f-horas', 'ponto médio do intervalo selecionado');
-      set('c-base', fmt(base) + ' ★');
-      set('f-base', `${fmtH(horas)} h × 50 = ${fmt(base)}`);
+      set('c-horas', fmtH(midH));
+      set('f-horas', `(${fmtH(fromH)} + ${fmtH(toH)}) ÷ 2`);
+      set('c-base', fmt(Math.round(base * 100) / 100) + ' ★');
+      set('f-base', `${fmtH(midH)} × 50`);
       set('c-media', media.toFixed(4).replace(/0+$/, '').replace(/\.$/, ''));
       set('f-media', `(${q2} + ${q3} + ${q4}) / 3 = ${(q2 + q3 + q4)} / 3`);
       set('c-raw', fmt(parRaw) + ' ★' + (parRaw > LIMIT ? '  → truncado' : ''));
-      set('f-raw', `${fmt(base)} × ${media.toFixed(4).replace(/0+$/, '')} = ${rawPar.toFixed(2)} → ⌈${rawPar.toFixed(2)}⌉ = ${fmt(parRaw)}`);
+      set('f-raw', `${fmt(Math.round(base * 100)/100)} × ${media.toFixed(4).replace(/0+$/, '')} = ${rawPar.toFixed(2)} → ⌈${rawPar.toFixed(2)}⌉ = ${fmt(parRaw)}`);
       set('c-minb', minB + ' badge' + (minB > 1 ? 's' : ''));
-      set('f-minb', duracaoLabel(horas));
+      set('f-minb', duracaoLabel(midH));
 
       // warn
       const capped = parRaw > LIMIT || (parEst + 100) > LIMIT || (parEst + 300) > LIMIT;
@@ -760,9 +881,8 @@
 
       set('r-din-est', fmt(dinEst));
       set('r-din-est-sub', `${fmt(parEst)} + 300`);
-      set('r-din-badge', fmt(dinBadge))
+      set('r-din-badge', fmt(dinBadge));
       set('r-din-badge-sub', `${fmt(dinEst)} ÷ ${minB} badges`);
-
 
       // certs
       set('cert-par', fmt(cPar) + ' XP');
